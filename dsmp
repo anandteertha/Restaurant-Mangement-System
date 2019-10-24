@@ -1,0 +1,409 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<malloc.h>
+#define max 25
+int temp,count=0;
+FILE *p,*p2;
+char s[20],s1[20];
+int front=-1,a[5][5];
+int rear=-1;
+int cq[max];
+int temp2;
+void update();
+void manager();
+void insertcq(int ch);
+int deletecq();
+//void arrayfill();
+struct node
+{
+char fooditem[20];
+int data;
+int flag;
+int amt_of_stock_left;
+char foodname[20];
+struct node *next;
+};
+struct stock
+{
+int amt;
+};
+struct stock rice,paneer,potato,flour;
+struct stock rice={1000};
+struct stock paneer={1000};
+struct stock potato={1000};
+struct stock flour={1000};
+struct node *start=NULL;
+struct node *insert(struct node *start)
+{
+struct node *ptr,*new_node;
+int amount;
+int fi;
+int f;
+char fn[20];
+p=fopen("MAIN","a");
+printf("\nenter the food item you are taking\n");
+printf("\n1.rice\n2.paneer\n3.potato\n4.flour\n");
+scanf("%d",&fi);
+switch(fi)
+{
+case 1:
+printf("\nenter the amount of stock you are taking\n");
+scanf("%d",&amount);
+temp=rice.amt;
+rice.amt=rice.amt-amount;
+if(rice.amt<0)
+{
+printf("\nyou cannot take that much quantity");
+rice.amt=temp;
+}
+else
+{
+printf("\nthe amount of rice left is : %d",rice.amt);
+printf("\nenter for what food you are taking the item\n");
+scanf("%s",fn);//no spaces between the name!
+new_node=(struct node *)malloc(sizeof(struct node));
+new_node->amt_of_stock_left=rice.amt;
+strcpy(new_node ->foodname,fn);
+strcpy(new_node ->fooditem,"rice");
+new_node->data=amount;
+if(0.3*1000>rice.amt)
+new_node ->flag=1;
+else
+new_node ->flag=0;
+new_node->next=start;
+start=new_node;
+fprintf(p,"%s\n",fn);
+}
+return start;
+break;
+case 2:
+
+printf("\nenter the amount of stock you are taking\n");
+scanf("%d",&amount);
+temp=paneer.amt;
+paneer.amt=paneer.amt-amount;
+if(paneer.amt<0)
+{
+printf("\nyou cannot take that much quantity");
+paneer.amt=temp;
+}
+else
+{
+printf("\nenter for what food you are taking the item\n");
+scanf("%s",fn);
+new_node=(struct node *)malloc(sizeof(struct node));
+strcpy(new_node ->fooditem,"paneer");
+new_node ->amt_of_stock_left=paneer.amt;
+strcpy(new_node->foodname,fn);
+new_node->data=amount;
+if(0.3*1000>paneer.amt)
+new_node ->flag=1;
+else
+new_node ->flag=0;
+new_node->next=start;
+start=new_node;
+fprintf(p,"%s\n",fn);
+}
+return start;
+break;
+case 3:
+
+printf("\nenter the amount of stock you are taking\n");
+scanf("%d",&amount);
+temp=potato.amt;
+potato.amt=potato.amt-amount;
+if(potato.amt<0)
+{
+printf("\nyou cannot take that much quantity");
+potato.amt=temp;
+}
+else
+{
+printf("\nenter for what food you are taking the item\n");
+scanf("%s",fn);
+new_node=(struct node *)malloc(sizeof(struct node));
+strcpy(new_node ->fooditem,"potato");
+new_node ->amt_of_stock_left=potato.amt;
+strcpy(new_node ->foodname,fn);
+new_node->data=amount;
+if(0.3*1000>potato.amt)
+new_node ->flag=1;
+else
+new_node ->flag=0;
+new_node->next=start;
+start=new_node;
+fprintf(p,"%s\n",fn);
+}
+return start;
+break;
+case 4:
+
+printf("\nenter the amount of stock you are taking\n");
+scanf("%d",&amount);
+temp=flour.amt;
+flour.amt=flour.amt-amount;
+if(flour.amt<0)
+{
+printf("\nyou cannot take that much quantity");
+flour.amt=temp;
+}
+else
+{
+printf("\nenter for what food you are taking the item\n");
+scanf("%s",fn);
+new_node=(struct node *)malloc(sizeof(struct node));
+strcpy(new_node ->fooditem,"flour");
+new_node ->amt_of_stock_left=flour.amt;
+strcpy(new_node ->foodname,fn);
+new_node->data=amount;
+if(0.3*1000>flour.amt)
+new_node ->flag=1;
+else
+new_node ->flag=0;
+new_node->next=start;
+start=new_node;
+fprintf(p,"%s\n",fn);
+}
+return start;
+break;
+}
+fclose(p);
+}
+void manager()
+{
+int m;
+char c;
+struct node *ptr;
+p=fopen("MAIN","r");
+p2=fopen("MENU","r");
+ptr=start;
+if(ptr==NULL)
+{
+	printf("\nno nodes are added\n");
+}
+/* if(ptr->next==NULL)
+{
+if(ptr->flag==1)
+{
+printf("\nthe stock of %s requires to be updated by %d",ptr->fooditem,300-ptr->amt_of_stock_left);
+update();
+}
+}
+else
+{
+while(ptr->next!=NULL)
+{
+if(ptr->flag==1)
+{
+printf("\nthe stock of %s requires to be updated by %d",ptr->fooditem,300-ptr->amt_of_stock_left);
+update();//update is a function which allows the manager to change the amount of stock by adding more to it.
+}
+ptr=ptr->next;
+}
+}*/
+else
+{
+if(ptr->flag==1)
+{
+printf("\nthe stock of %s requires to be updated by %d",ptr->fooditem,300-ptr->amt_of_stock_left);
+update();
+}
+else if(ptr->flag==0)
+{
+	printf("\nno need for updation\n");
+}
+else
+{
+while(ptr->next!=NULL)
+{
+	if(ptr->flag==1)
+	printf("\nthe stock of %s requires to be updated by %d\n",ptr->fooditem,300-ptr->amt_of_stock_left);
+update();
+}
+}
+}
+printf("\ndo you want to view the file now?yes=1,no=0\n");
+scanf("%d",&m);
+if(m==1){
+while(fread(s,sizeof(s),1,p)==1)
+printf("%s",s);
+printf("\n");
+while(fread(s1,sizeof(s),1,p2)==1)
+printf("%s",s1);
+}
+fclose(p);
+fclose(p2);
+}
+void update()
+{
+int ask,amount;
+int fi;
+struct node *ptr;
+ptr=start;
+	printf("\nwhich food item do you want to add\n");
+	printf("\n1.rice\n2.paneer\n3.potato\n4.four\n");
+	scanf("%d",&fi);	
+	switch(fi)
+	{
+	case 1:	
+	printf("\nhow much amount are you adding to the stock?\n");
+	scanf("%d",&amount);
+	rice.amt+=amount;
+	if(0.3*1000>rice.amt)
+	ptr ->flag=1;
+	else
+	ptr ->flag=0;
+	ptr->data-=amount;
+	ptr->amt_of_stock_left+=amount;
+	printf("\nthe amount of rice in stock is :%d",ptr->amt_of_stock_left);
+	printf("\nthe amount of rice is updated");	
+	break;
+	case 2:	
+	printf("\nhow much amount are you adding to the stock?\n");
+	scanf("%d",&amount);
+	paneer.amt+=amount;
+	if(0.3*1000>paneer.amt)
+	ptr ->flag=1;
+	else
+	ptr ->flag=0;
+	ptr->data-=amount;
+	ptr->amt_of_stock_left+=amount;
+	printf("\nthe amount of paneer in stock is :%d",ptr->amt_of_stock_left);
+	printf("\nthe amount of paneer is updated");	
+	break;
+	case 3:	
+	printf("\nhow much amount are you adding to the stock?\n");
+	scanf("%d",&amount);
+	potato.amt+=amount;
+	if(0.3*1000>potato.amt)
+	ptr ->flag=1;
+	else
+	ptr ->flag=0;
+	ptr->data-=amount;
+	ptr->amt_of_stock_left+=amount;
+	printf("\nthe amount of potato in stock is :%d",ptr->amt_of_stock_left);
+	printf("\nthe amount of potato is updated");		
+	break;
+	case 4:	
+	printf("\nhow much amount are you adding to the stock?\n");
+	scanf("%d",&amount);
+	flour.amt+=amount;
+	if(0.3*temp>flour.amt)
+	ptr ->flag=1;
+	else
+	ptr ->flag=0;
+	ptr->data-=amount;
+	ptr->amt_of_stock_left+=amount;
+	printf("\nthe amount of flour in stock is :%d",ptr->amt_of_stock_left);
+	printf("\nthe amount of flour is updated");	
+	break;	
+	}
+}
+//arrayfill()
+void coordinator()
+{
+int ch,temp1,temp,i,j,x,y;
+
+for(i=0;i<5;i++)
+{
+for(j=0;j<5;j++)
+{
+	printf("%d\t",a[i][j]);
+}
+printf("\n");
+}
+printf("\nenter 1 to insert or 0 for delete\n");
+scanf("%d",&ch);
+if(ch==1){
+printf("\ntell me where you want to sit\n");
+scanf("%d %d",&x,&y);
+a[x-1][y-1]=1;
+insertcq(ch);
+}
+else {
+temp1=deletecq();
+printf("\nwaiter help me out ,tell me the last dude who left where was he sitting!!\n");
+scanf("%d %d",&x,&y);
+a[x-1][y-1]=0;
+}
+printf("\nthe number of seats occupied are: %d\nthe number of seats left are: %d\n",count,25-count);temp=count;
+for(i=0;i<5;i++)
+{
+for(j=0;j<5;j++)
+{
+printf("%d\t",a[i][j]);
+}
+printf("\n");
+}
+}
+void insertcq(int ch)
+{
+if(((rear==max-1)&&(front==0))||(rear==front-1))
+printf("\nrestaurant full!!\n");
+else if(rear==-1)
+{
+	rear=0;
+	front=0;
+	cq[rear]=ch;
+	count++;
+}
+else if(rear==max-1)
+{
+	rear=0;
+	cq[rear]=ch;
+	count++;
+}
+else
+{
+	count++;
+	rear++;
+	cq[rear]=ch;
+}
+}
+int deletecq()
+{
+int val;
+if(front==-1)
+printf("\nrestaurant empty\n");
+else if(front==rear){
+front=rear=-1;count--;}
+else if(front==max-1){
+front=0;count--;}
+else {
+front++;count--;}
+val=cq[front];
+return val;
+}
+/*void arrayfill()
+{int i,j;
+for(i=0;i<5;i++)
+{
+for(j=0;j<5;j++)
+{
+a[i][j]=0;
+}
+}
+}*/
+void main()
+{
+int choice;
+do
+{
+printf("\nenter your profession\n");
+printf("\n1.chef\n2.manager\n3.co-ordinator\n4.exit\n");
+scanf("%d",&choice);
+switch(choice)
+{
+case 1:
+start=insert(start);
+break;
+case 2:
+manager();
+break;
+case 3:
+coordinator();
+break;
+}
+}while(choice!=4);
+}
